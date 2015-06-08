@@ -26,15 +26,15 @@ class ViewController: UIViewController,UIAlertViewDelegate
 
     @IBAction func btnRemoveFile(sender: AnyObject)
     {
-        filePath=documentDir?.stringByAppendingPathComponent("temp.txt")
-        fileManagaer?.removeItemAtPath(filePath, error: nil)
+        filePath=documentDir?.stringByAppendingPathComponent("file1.txt")
+        fileManagaer?.removeItemAtPath(filePath as! String, error: nil)
         self.showSuccessAlert("Message", messageAlert: "File removed successfully.")
     }
     
     @IBAction func btnEqualityClicked(sender: AnyObject)
     {
-        var filePath1=documentDir?.stringByAppendingPathComponent("temp.txt")
-        var filePath2=documentDir?.stringByAppendingPathComponent("copy.txt")
+        var filePath1=documentDir?.stringByAppendingPathComponent("file1.txt")
+        var filePath2=documentDir?.stringByAppendingPathComponent("file2.txt")
         
         if((fileManagaer? .contentsEqualAtPath(filePath1!, andPath: filePath2!)) != nil)
         {
@@ -54,8 +54,8 @@ class ViewController: UIViewController,UIAlertViewDelegate
     
     @IBAction func btnMoveClicked(sender: AnyObject)
     {
-        var oldFilePath:String=documentDir!.stringByAppendingPathComponent("/folder1/move.txt") as String
-        var newFilePath:String=documentDir!.stringByAppendingPathComponent("temp.txt") as String
+        var oldFilePath:String=documentDir!.stringByAppendingPathComponent("file1.txt") as String
+        var newFilePath:String=documentDir!.stringByAppendingPathComponent("/folder1/file1.txt") as String
         var err :NSError?
         fileManagaer?.moveItemAtPath(oldFilePath, toPath: newFilePath, error:&err)
         if((err) != nil)
@@ -75,34 +75,35 @@ class ViewController: UIViewController,UIAlertViewDelegate
     
     @IBAction func btnCreateFileClicked(sender: AnyObject)
     {
+        var error: NSError? = nil
         filePath=documentDir?.stringByAppendingPathComponent("file1.txt")
-        fileManagaer?.createFileAtPath(filePath!, contents: nil, attributes: nil)
+        fileManagaer?.createFileAtPath(filePath! as String, contents: nil, attributes: nil)
         
         filePath=documentDir?.stringByAppendingPathComponent("file2.txt")
-        fileManagaer?.createFileAtPath(filePath!, contents: nil, attributes: nil)
+        fileManagaer?.createFileAtPath(filePath! as String, contents: nil, attributes: nil)
+        
         self.showSuccessAlert("Success", messageAlert: "File created successfully")
     }
     
     @IBAction func btnCreateDirectoryClicked(sender: AnyObject)
     {
         filePath=documentDir?.stringByAppendingPathComponent("/folder1")
-        fileManagaer?.createDirectoryAtPath(filePath!, withIntermediateDirectories: false, attributes: nil, error: nil)
+        fileManagaer?.createDirectoryAtPath(filePath! as String, withIntermediateDirectories: false, attributes: nil, error: nil)
         self.showSuccessAlert("Success", messageAlert: "Directory created successfully")
     }
     
     @IBAction func btnReadFileClicked(sender: AnyObject)
     {
-        filePath=documentDir?.stringByAppendingPathComponent("/new/file1.txt")
+        filePath=documentDir?.stringByAppendingPathComponent("/file1.txt")
         var fileContent:NSData?
-        fileContent=fileManagaer?.contentsAtPath(filePath!)
-        var str:NSString=NSString(data: fileContent!, encoding: NSUTF8StringEncoding)
+        fileContent=fileManagaer?.contentsAtPath(filePath! as String)
+        var str:NSString=NSString(data: fileContent!, encoding: NSUTF8StringEncoding)!
         self.showSuccessAlert("Success", messageAlert: "data : \(str)")
     }
     
     @IBAction func btnCopyFileClicked(sender: AnyObject)
     {
-        filePath=documentDir?.stringByAppendingPathComponent("temp.txt")
-        var originalFile=documentDir?.stringByAppendingPathComponent("temp.txt")
+        var originalFile=documentDir?.stringByAppendingPathComponent("file1.txt")
         var copyFile=documentDir?.stringByAppendingPathComponent("copy.txt")
         fileManagaer?.copyItemAtPath(originalFile!, toPath: copyFile!, error: nil)
         self.showSuccessAlert("Success", messageAlert:"File copied successfully")
@@ -110,13 +111,14 @@ class ViewController: UIViewController,UIAlertViewDelegate
     
     @IBAction func btnDirectoryContentsClicked(sender: AnyObject)
     {
-        var arrDirContent=fileManagaer?.contentsOfDirectoryAtPath(documentDir, error: nil)
+        var error: NSError? = nil
+        var arrDirContent=fileManagaer!.contentsOfDirectoryAtPath(documentDir as! String, error: &error)
         self.showSuccessAlert("Success", messageAlert: "Content of directory \(arrDirContent)")
     }
     
     func showSuccessAlert(titleAlert:NSString,messageAlert:NSString)
     {
-        var alert:UIAlertController=UIAlertController(title:titleAlert, message: messageAlert, preferredStyle: UIAlertControllerStyle.Alert)
+        var alert:UIAlertController=UIAlertController(title:titleAlert as String, message: messageAlert as String, preferredStyle: UIAlertControllerStyle.Alert)
         var okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default)
         {
                 UIAlertAction in
@@ -130,18 +132,18 @@ class ViewController: UIViewController,UIAlertViewDelegate
 
     @IBAction func btnFilePermissionClicked(sender: AnyObject)
     {
-        filePath=documentDir?.stringByAppendingPathComponent("temp.txt")
+        filePath=documentDir?.stringByAppendingPathComponent("file1.txt")
         var filePermissions:NSString = ""
     
-        if((fileManagaer?.isWritableFileAtPath(filePath!)) != nil)
+        if((fileManagaer?.isWritableFileAtPath(filePath! as String)) != nil)
         {
             filePermissions=filePermissions.stringByAppendingString("file is writable. ")
         }
-        if((fileManagaer?.isReadableFileAtPath(filePath!)) != nil)
+        if((fileManagaer?.isReadableFileAtPath(filePath! as String)) != nil)
         {
             filePermissions=filePermissions.stringByAppendingString("file is readable. ")
         }
-        if((fileManagaer?.isExecutableFileAtPath(filePath!)) != nil)
+        if((fileManagaer?.isExecutableFileAtPath(filePath! as String)) != nil)
         {
             filePermissions=filePermissions.stringByAppendingString("file is executable.")
         }
